@@ -29,12 +29,13 @@ export default function AdminSidebar({ activeTab, setActiveTab, isOpen, setIsOpe
   const menuItems = [
     { id: 'dashboard', label: 'Overview Metrics', icon: LayoutDashboard },
     { id: 'users', label: 'Users & Access (RBAC)', icon: Users },
+    { id: 'community', label: 'Community & Moderation', icon: MessageSquare },
     { id: 'vehicles', label: 'Vehicles Inventory', icon: Car },
     { id: 'categories', label: 'CMS: Categories', icon: Layers },
     { id: 'media', label: 'CMS: Media Library', icon: Image },
     { id: 'blogs', label: 'CMS: Blogs', icon: BookOpen },
     { id: 'newsletters', label: 'CMS: Newsletters', icon: Mail },
-    { id: 'reviews', label: 'Review Moderation', icon: MessageSquare },
+    { id: 'reviews', label: 'Review Moderation', icon: Gauge },
     { id: 'profile', label: 'Admin Profile Settings', icon: User },
   ];
 

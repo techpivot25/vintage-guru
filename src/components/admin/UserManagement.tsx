@@ -23,6 +23,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
+import { blockCommunityUser, unblockCommunityUser, removeCommunityUser } from '../../utils/communityModeration';
 
 interface UserManagementProps {
   users: AdminUser[];
@@ -186,6 +187,14 @@ export default function UserManagement({ users, setUsers, onAddAlert }: UserMana
         const userRef = doc(db, 'users', id);
         await updateDoc(userRef, { status: nextStatus });
       } catch (e) {}
+
+      // Synchronize community posting rights
+      if (nextStatus === 'Blocked') {
+        blockCommunityUser(name, 'Account suspended by Admin via RBAC User Management', 'Super Admin');
+      } else {
+        unblockCommunityUser(name);
+      }
+
       onAddAlert(`User ${name} has been ${nextStatus === 'Blocked' ? 'Blocked/Suspended' : 'Unblocked'}`);
     } catch (err) {
       console.error(err);
@@ -200,6 +209,10 @@ export default function UserManagement({ users, setUsers, onAddAlert }: UserMana
         const userRef = doc(db, 'users', id);
         await deleteDoc(userRef);
       } catch (e) {}
+
+      // Also remove from community
+      removeCommunityUser(name, true);
+
       onAddAlert(`Permanently deleted profile: ${name}`);
     } catch (err) {
       console.error(err);

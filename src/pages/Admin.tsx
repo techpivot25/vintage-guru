@@ -4,6 +4,7 @@ import { Navigate } from 'react-router-dom';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import AdminHeader from '../components/admin/AdminHeader';
 import UserManagement from '../components/admin/UserManagement';
+import CommunityManagement from '../components/admin/CommunityManagement';
 import VehicleManagement from '../components/admin/VehicleManagement';
 import CmsManagement from '../components/admin/CmsManagement';
 import ReviewModeration from '../components/admin/ReviewModeration';
@@ -492,6 +493,12 @@ export default function Admin() {
             {activeTab === 'users' && (
               <motion.div key="users" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                 <UserManagement users={users} setUsers={setUsers} onAddAlert={addToast} />
+              </motion.div>
+            )}
+
+            {activeTab === 'community' && (
+              <motion.div key="community" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <CommunityManagement onAddAlert={addToast} />
               </motion.div>
             )}
 

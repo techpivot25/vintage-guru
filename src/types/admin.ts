@@ -73,3 +73,18 @@ export interface NewsletterSubscriber {
   status: 'Subscribed' | 'Unsubscribed';
   date: string;
 }
+
+export interface CommunityMember {
+  id: string;
+  name: string;
+  email?: string;
+  avatar?: string;
+  city: string;
+  badge: 'Verified Owner' | 'Forum Veteran' | 'Senior Contributor' | 'Community Moderator' | string;
+  joinedDate: string;
+  status: 'Active' | 'Blocked';
+  threadsCount: number;
+  repliesCount: number;
+  blockedReason?: string;
+  blockedAt?: string;
+}
