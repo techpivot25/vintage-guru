@@ -1,0 +1,46 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile document",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "User ID, matches Firebase Auth UID" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "subscription": { "type": "string", "enum": ["free", "silver", "gold", "platinum"] },
+        "createdAt": { "type": "object", "description": "Firestore server timestamp" }
+      },
+      "required": ["uid", "email", "role", "subscription", "createdAt"]
+    },
+    "Vehicle": {
+      "title": "Vehicle",
+      "description": "Vehicle listing on the marketplace",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "year": { "type": "number" },
+        "price": { "type": "number" },
+        "location": { "type": "string" },
+        "type": { "type": "string", "enum": ["Car", "Truck", "Two-Wheeler"] },
+        "ownerId": { "type": "string", "description": "UID of the user who owns this listing" },
+        "image": { "type": "string" },
+        "createdAt": { "type": "object" },
+        "status": { "type": "string", "enum": ["available", "sold"] }
+      },
+      "required": ["name", "year", "price", "location", "type", "ownerId", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Stores user profiles."
+    },
+    "/vehicles/{vehicleId}": {
+      "schema": { "$ref": "#/entities/Vehicle" },
+      "description": "Stores vehicle listings."
+    }
+  }
+}

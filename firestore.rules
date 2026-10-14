@@ -1,0 +1,127 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Catch-all default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ----------------------------------------------------------------------
+    // Primitives & Helpers
+    // ----------------------------------------------------------------------
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    
+    function incoming() {
+      return request.resource.data;
+    }
+    
+    function existing() {
+      return resource.data;
+    }
+    
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'techpivot25@gmail.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    // ----------------------------------------------------------------------
+    // User Entity Validation
+    // ----------------------------------------------------------------------
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'role', 'subscription']) 
+        && data.uid is string && data.uid.size() <= 128
+        && data.email is string && data.email.size() <= 256
+        && data.displayName is string && data.displayName.size() <= 128
+        && data.photoURL is string && data.photoURL.size() <= 1024
+        && data.role in ['user', 'admin']
+        && data.subscription in ['free', 'silver', 'gold', 'platinum'];
+    }
+
+    match /users/{userId} {
+      allow read: if (isSignedIn() && request.auth.uid == userId) || isAdmin();
+
+      // Allow create: the uid must match request.auth.uid and path userId
+      allow create: if isSignedIn() 
+        && isValidId(userId)
+        && request.auth.uid == userId
+        && isValidUser(incoming())
+        && incoming().uid == request.auth.uid
+        && incoming().createdAt == request.time;
+        // In AI Studio, users might not have email_verified, so we relax isVerified() just for creation/auth flow
+
+      // Allow update: only owner can update, limited fields (or admin can update anything)
+      allow update: if isAdmin() || (
+        isSignedIn()
+        && request.auth.uid == userId
+        && incoming().uid == existing().uid
+        && (
+          // Action: Update Profile/Subscription
+          incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'subscription', 'role'])
+          // Ensure they don't escalate to admin
+          && (
+            !('role' in incoming().diff(existing()).affectedKeys()) 
+            || (incoming().role == 'user')
+          )
+        )
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    // ----------------------------------------------------------------------
+    // Vehicle Entity Validation
+    // ----------------------------------------------------------------------
+    function isValidVehicle(data) {
+      return data.keys().hasAll(['name', 'year', 'price', 'location', 'type', 'ownerId'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 128
+        && data.year is number && data.year >= 1800 && data.year <= 2100
+        && data.price is number && data.price >= 0
+        && data.location is string && data.location.size() <= 256
+        && data.type in ['Car', 'Truck', 'Two-Wheeler']
+        && data.ownerId is string && data.ownerId.size() <= 128;
+    }
+
+    match /vehicles/{vehicleId} {
+      // Anyone can read vehicles (public marketplace)
+      allow read: if true;
+
+      allow create: if isSignedIn()
+        // && isVerified() // Relaxed for the demo environment where users mock emails
+        && isValidId(vehicleId)
+        && isValidVehicle(incoming())
+        && incoming().ownerId == request.auth.uid
+        && incoming().createdAt == request.time;
+
+      allow update: if isAdmin() || (
+        isSignedIn()
+        // && isVerified()
+        && existing().ownerId == request.auth.uid
+        && incoming().ownerId == existing().ownerId
+        && isValidVehicle(incoming())
+        && (
+          // Authorized fields to update
+          incoming().diff(existing()).affectedKeys().hasOnly(['name', 'year', 'price', 'location', 'type', 'image', 'status'])
+        )
+      );
+
+      allow delete: if isAdmin() || (
+        isSignedIn() 
+        // && isVerified()
+        && existing().ownerId == request.auth.uid
+      );
+    }
+  }
+}

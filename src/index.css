@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-brand-red: #d02326;
+  --color-brand-dark: #212121;
+  --color-bottle: #1b382b;
+  --color-oxblood: #800020;
+  --color-antique: #f4f0ea;
+  --color-parchment: #faf8f5;
+  --color-brass: #c5a059;
+  --color-charcoal: #2b2b2b;
+  --color-page-bg: var(--color-page-bg);
+  --color-card-bg: var(--color-card-bg);
+  --color-text-main: var(--color-text-main);
+  --color-text-muted: var(--color-text-muted);
+  --color-border: var(--color-border);
+  --color-hover: var(--color-hover);
+  
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+:root {
+  --color-page-bg: #f9fafb;
+  --color-card-bg: #ffffff;
+  --color-text-main: #111827;
+  --color-text-muted: #4b5563;
+  --color-border: #e5e7eb;
+  --color-hover: #f3f4f6;
+
+  /* Vintage & Heritage Theme Color Palette */
+  --color-bottle: #1b382b;
+  --color-oxblood: #800020;
+  --color-antique: #f4f0ea;
+  --color-parchment: #faf8f5;
+  --color-brass: #c5a059;
+  --color-charcoal: #2b2b2b;
+  --color-brand-red: #d02326;
+  --color-brand-dark: #212121;
+}
+
+.dark {
+  --color-page-bg: #111827;
+  --color-card-bg: #1f2937;
+  --color-text-main: #f9fafb;
+  --color-text-muted: #9ca3af;
+  --color-border: #374151;
+  --color-hover: #1f2937;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-page-bg);
+  color: var(--color-text-main);
+  -webkit-font-smoothing: antialiased;
+  transition-property: background-color, color, border-color;
+  transition-duration: 200ms;
+}
+
+/* Automatic Utility Adaptations for High-Quality Dark Mode */
+.dark body {
+  background-color: #111827 !important;
+  color: #f9fafb !important;
+}
+
+.dark .bg-white {
+  background-color: #1f2937 !important;
+}
+
+.dark .text-gray-900 {
+  color: #f9fafb !important;
+}
+
+.dark .text-gray-800 {
+  color: #f3f4f6 !important;
+}
+
+.dark .text-gray-700 {
+  color: #e5e7eb !important;
+}
+
+.dark .text-gray-600 {
+  color: #d1d5db !important;
+}
+
+.dark .text-gray-500 {
+  color: #9ca3af !important;
+}
+
+.dark .border-gray-200 {
+  border-color: #374151 !important;
+}
+
+.dark .border-gray-100 {
+  border-color: #1f2937 !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: #111827 !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: #374151 !important;
+}
+
+.dark .hover\:bg-gray-50:hover {
+  background-color: #374151 !important;
+}
+
+.dark .shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark input, .dark textarea, .dark select {
+  background-color: #111827 !important;
+  color: #f9fafb !important;
+  border-color: #374151 !important;
+}
+

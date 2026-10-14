@@ -1,0 +1,11 @@
+{
+  "name": "VintageGuru",
+  "description": "Global Vintage Vehicle Community, Marketplace, and Heritage Platform",
+  "requestFramePermissions": [
+    "geolocation",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
